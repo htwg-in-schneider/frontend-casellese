@@ -1,12 +1,16 @@
+<script setup>
+import FooterLink from './FooterLink.vue';
+</script>
+
 <template>
     <footer class="text-center py-4">
         <p>&copy; 2025 Ricetti in Pittari. Alle Rechte vorbehalten.</p>
         <nav>
-            <a href="#" class="footer-link" aria-label="Kontakt">Kontakt</a> 
+            <FooterLink text="Kontakt" label="Kontakt" href="/kontakt" />
             <span aria-hidden="true" style="margin: 0 0.5rem">|</span>
-            <a href="#" class="footer-link" aria-label="Datenschutz">Datenschutz</a>
+            <FooterLink text="Datenschutz" label="Datenschutz" href="/datenschutz" />
             <span aria-hidden="true" style="margin: 0 0.5rem">|</span>
-            <a href="#" class="footer-link" aria-label="Impressum">Impressum</a>
+            <FooterLink text="Impressum" label="Impressum" href="/impressum" />
         </nav>
     </footer>
 </template>
@@ -15,13 +19,6 @@
 </script>
 
 <style scoped>
-.footer-link {
-    color: #f0f0f0;
-    text-decoration: none;
-}
 
-.footer-link:hover {
-    color: #e54c4c;
-}
 </style>
 
