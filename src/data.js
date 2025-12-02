@@ -8,6 +8,11 @@ export const products = [
         recipe: null,
         price: 7.99,
         imageUrl: "http://nucccio.github.io/casellese-images/caciocavallo.webp",
+        imageUrl_Details:
+            "http://nucccio.github.io/casellese-images/caciocavallo-rezepte.webp",
+            
+        ingredients: 
+            "Kuhmilch, Lab, Salz, Konservierungsstoff: Natriumbenzoat (E211)",
     },
     {
         id: 2,
@@ -19,6 +24,8 @@ export const products = [
         price: 15.99,
         imageUrl:
             "http://nucccio.github.io/casellese-images/salsiccia.webp",
+        imageUrl_Details:
+            "http://nucccio.github.io/casellese-images/salsiccia-rezepte.webp",
     },
     {
         id: 3,
@@ -30,5 +37,7 @@ export const products = [
         price: 4.99,
         imageUrl:
             "http://nucccio.github.io/casellese-images/brot.webp",
+        imageUrl_Details:
+            "http://nucccio.github.io/casellese-images/brot-rezepte.webp",
     },
 ];

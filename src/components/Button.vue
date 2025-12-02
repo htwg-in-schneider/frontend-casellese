@@ -13,7 +13,7 @@ const buttonClass = `btn btn-${props.variant}`;
     <slot />
   </button>
 </template>
-
+<!--
 <style scoped>
 /* Button styled to the requested color */
 .btn-accent {
@@ -44,3 +44,4 @@ const buttonClass = `btn btn-${props.variant}`;
   cursor: pointer;
 }
 </style>
+-->

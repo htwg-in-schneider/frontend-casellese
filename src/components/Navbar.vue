@@ -5,9 +5,14 @@
  <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
+            <router-link to="/" class="navbar-brand fw-bold text-accent">
+                <img src="https://nucccio.github.io/casellese-images/logo_ricetti.webp" alt="Logo Ricetti" height="100" class="me-2">
+            </router-link>
+            <!--
             <a class="navbar-brand fw-bold text-accent" href="index.html">
                 <img src="https://nucccio.github.io/casellese-images/logo_ricetti.webp" alt="Logo Ricetti" height="100" class="me-2">
             </a>
+            -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
