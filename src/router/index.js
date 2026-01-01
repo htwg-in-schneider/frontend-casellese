@@ -1,7 +1,9 @@
 // router/index.js
-import { createRouter, createWebHistory } from 'vue-router'; 
+import { createRouter, createWebHistory } from 'vue-router';
+import { authGuard } from '@auth0/auth0-vue'
 import ProductCatalog from '@/views/ProductCatalog.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
+import Profile from '@/views/Profile.vue';
 
 const routes = [
   { path: '/', component: ProductCatalog },
@@ -10,6 +12,11 @@ const routes = [
     name: 'product',
     component: ProductDetail,
     props: true
+  },
+  {
+    path: '/profile',
+    component: Profile,
+    beforeEnter: authGuard  // Geschützte Route - erfordert Login
   }
 ];
 
@@ -18,4 +25,4 @@ const router = createRouter({
   routes,
 });
 
-export default router; 
+export default router;
