@@ -2,8 +2,6 @@
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth0 } from '@auth0/auth0-vue';
-import Navbar from '@/components/Navbar.vue';
-import Footer from '@/components/Footer.vue';
 import Button from '@/components/Button.vue';
 import NavButton from '@/components/NavButton.vue';
 
@@ -81,7 +79,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <Navbar />
   <div class="container py-5" style="min-height: 70vh;">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6">
@@ -197,7 +194,6 @@ onMounted(() => {
       </div>
     </div>
   </div>
-  <Footer />
 </template>
 
 <style scoped>

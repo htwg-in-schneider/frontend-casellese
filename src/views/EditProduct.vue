@@ -2,8 +2,6 @@
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuth0 } from '@auth0/auth0-vue';
-import Navbar from '@/components/Navbar.vue';
-import Footer from '@/components/Footer.vue';
 import Button from '@/components/Button.vue';
 import NavButton from '@/components/NavButton.vue';
 
@@ -126,7 +124,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  <Navbar />
   <div class="container py-5" style="min-height: 70vh;">
     <!-- Loading -->
     <div v-if="isLoading" class="text-center py-5">
@@ -268,7 +265,6 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-  <Footer />
 </template>
 
 <style scoped>

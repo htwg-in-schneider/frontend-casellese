@@ -2,8 +2,6 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import Navbar from '@/components/Navbar.vue';
-import Footer from '@/components/Footer.vue';
 
 const route = useRoute();
 const { isAuthenticated } = useAuth0();
@@ -82,7 +80,6 @@ function formatMarkdown(text) {
 </script>
 
 <template>
-  <Navbar />
   <div class="container py-5">
     <!-- Loading State -->
     <div v-if="isLoading" class="text-center py-5">
@@ -178,7 +175,6 @@ function formatMarkdown(text) {
       </router-link>
     </div>
   </div>
-  <Footer />
 </template>
 
 <style scoped>
