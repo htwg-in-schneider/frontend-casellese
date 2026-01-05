@@ -9,7 +9,7 @@ const error = ref('');
 async function fetchProducts() {
   try {
     isLoading.value = true;
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products`);
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/product`); //Tippfehler behoben
     
     if (response.ok) {
       products.value = await response.json();
