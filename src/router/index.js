@@ -1,22 +1,43 @@
 // router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
-import { authGuard } from '@auth0/auth0-vue'
+import { authGuard } from '@auth0/auth0-vue';
 import ProductCatalog from '@/views/ProductCatalog.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
+import CreateProduct from '@/views/CreateProduct.vue';
+import EditProduct from '@/views/EditProduct.vue';
 import Profile from '@/views/Profile.vue';
 
 const routes = [
-  { path: '/', component: ProductCatalog },
+  // Öffentliche Routen
+  { 
+    path: '/', 
+    component: ProductCatalog 
+  },
   { 
     path: '/product/:id', 
     name: 'product',
     component: ProductDetail,
     props: true
   },
+  
+  // Geschützte Routen (erfordern Login)
+  {
+    path: '/product/create',
+    name: 'create-product',
+    component: CreateProduct,
+    beforeEnter: authGuard  // Nur eingeloggte User
+  },
+  {
+    path: '/product/edit/:id',
+    name: 'edit-product',
+    component: EditProduct,
+    beforeEnter: authGuard  // Nur eingeloggte User
+  },
   {
     path: '/profile',
+    name: 'profile',
     component: Profile,
-    beforeEnter: authGuard  // Geschützte Route - erfordert Login
+    beforeEnter: authGuard  // Nur eingeloggte User
   }
 ];
 

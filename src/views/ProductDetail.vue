@@ -1,8 +1,12 @@
 <script setup>
 import { useRoute } from 'vue-router';
 import { ref, onMounted } from 'vue';
+import { useAuth0 } from '@auth0/auth0-vue';
+import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
 
 const route = useRoute();
+const { isAuthenticated } = useAuth0();
 
 // Holen Sie die ID aus den Routen-Parametern
 const productId = route.params.id;
@@ -19,7 +23,7 @@ const activeRecipe = ref(null);
 // Produkt vom Backend laden
 async function fetchProduct() {
   try {
-    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/products/${productId}`);
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/product/${productId}`);
     
     if (response.ok) {
       product.value = await response.json();
@@ -78,6 +82,7 @@ function formatMarkdown(text) {
 </script>
 
 <template>
+  <Navbar />
   <div class="container py-5">
     <!-- Loading State -->
     <div v-if="isLoading" class="text-center py-5">
@@ -147,9 +152,21 @@ function formatMarkdown(text) {
           </a>
         </div>
 
-        <router-link to="/" class="btn btn-outline-dark mt-4">
-          Zurück zum Katalog
-        </router-link>
+        <!-- Action Buttons -->
+        <div class="mt-4 d-flex flex-wrap gap-2">
+          <router-link to="/" class="btn btn-outline-dark">
+            ← Zurück zum Katalog
+          </router-link>
+          
+          <!-- Bearbeiten Button - nur für eingeloggte User -->
+          <router-link 
+            v-if="isAuthenticated" 
+            :to="`/product/edit/${product.id}`" 
+            class="btn btn-warning"
+          >
+            ✏️ Bearbeiten
+          </router-link>
+        </div>
       </div>
     </div>
 
@@ -161,6 +178,7 @@ function formatMarkdown(text) {
       </router-link>
     </div>
   </div>
+  <Footer />
 </template>
 
 <style scoped>
@@ -183,6 +201,18 @@ function formatMarkdown(text) {
 .btn-accent:hover {
   background-color: #b08d1f;
   color: white;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+  border-color: #d39e00;
+  color: #212529;
 }
 
 .recipe-content {

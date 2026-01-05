@@ -1,5 +1,8 @@
 <script setup>
+import { useAuth0 } from '@auth0/auth0-vue'
 import UserMenu from './UserMenu.vue'
+
+const { isAuthenticated } = useAuth0()
 </script>
 
 <template>
@@ -28,6 +31,12 @@ import UserMenu from './UserMenu.vue'
                     <li class="nav-item">
                         <router-link class="nav-link" to="/">Kontakt</router-link>
                     </li>
+                    <!-- Admin Link - nur für eingeloggte User sichtbar -->
+                    <li v-if="isAuthenticated" class="nav-item">
+                        <router-link class="nav-link text-success fw-bold" to="/product/create">
+                            ➕ Neues Produkt
+                        </router-link>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -35,5 +44,7 @@ import UserMenu from './UserMenu.vue'
 </template>
 
 <style scoped>
-
+.text-success {
+    color: #198754 !important;
+}
 </style>
