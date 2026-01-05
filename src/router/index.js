@@ -1,6 +1,7 @@
 // router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import { authGuard } from '@auth0/auth0-vue';
+import HomeView from '@/views/HomeView.vue';
 import ProductCatalog from '@/views/ProductCatalog.vue';
 import ProductDetail from '@/views/ProductDetail.vue';
 import CreateProduct from '@/views/CreateProduct.vue';
@@ -11,6 +12,12 @@ const routes = [
   // Öffentliche Routen
   { 
     path: '/', 
+    name: 'home',
+    component: HomeView 
+  },
+  { 
+    path: '/rezepte', 
+    name: 'rezepte',
     component: ProductCatalog 
   },
   { 

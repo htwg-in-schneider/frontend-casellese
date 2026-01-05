@@ -7,11 +7,11 @@ const { isAuthenticated } = useAuth0()
 
 <template>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm navbar-accent">
         <div class="container">
-            <a class="navbar-brand fw-bold text-accent" href="/">
+            <router-link class="navbar-brand fw-bold text-accent" to="/">
                 <img src="https://nucccio.github.io/casellese-images/logo_ricetti.webp" alt="Logo Ricetti" height="100" class="me-2">
-            </a>
+            </router-link>
 
             <div class="d-flex align-items-center order-lg-last">
                 <UserMenu class="me-2 me-lg-0" />
@@ -20,16 +20,16 @@ const { isAuthenticated } = useAuth0()
                 </button>
             </div>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-4 fs-5">
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav ms-auto fs-5">
                     <li class="nav-item">
-                        <router-link class="nav-link active" to="/">Home</router-link>
+                        <router-link class="nav-link" to="/">Home</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/">Rezepte</router-link>
+                        <router-link class="nav-link" to="/rezepte">Rezepte</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/">Kontakt</router-link>
+                        <router-link class="nav-link" to="/kontakt">Kontakt</router-link>
                     </li>
                     <!-- Admin Link - nur für eingeloggte User sichtbar -->
                     <li v-if="isAuthenticated" class="nav-item">
@@ -38,12 +38,20 @@ const { isAuthenticated } = useAuth0()
                         </router-link>
                     </li>
                 </ul>
+                <form class="d-flex ms-auto">
+                    <input class="form-control me-2" type="search" placeholder="Suche...">
+                    <button class="btn btn-accent" type="submit">Suchen</button>
+                </form>
             </div>
         </div>
     </nav>
 </template>
 
 <style scoped>
+.navbar-accent {
+    border-bottom: 5px solid #e54c4c;
+}
+
 .text-success {
     color: #198754 !important;
 }

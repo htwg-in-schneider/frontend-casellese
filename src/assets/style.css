@@ -5,7 +5,7 @@ body {
 .text-accent {
   color: #e54c4c; /* Akzentfarbe */
 }
-/*
+
 .btn-accent {
   background-color: #e54c4c;
   color: white;
@@ -15,10 +15,10 @@ body {
 }
 
 .btn-accent:hover {
-  background-color: #e54c4c;
+  background-color: #c94141;
   color: #fff;
 }
-/*
+
 .footer-link {
   color: #ccc;
   text-decoration: none;
@@ -26,30 +26,30 @@ body {
 
 .footer-link:hover {
   color: #e54c4c;
-}*/
+}
 
 .image-container {
-  width: 100%; /* oder eine feste Breite */
-  height: 500px; /* Höhe des Containers */
+  width: 100%;
+  height: 500px;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden; /* Verhindert, dass das Bild über den Container hinausragt */
-  background-color: #f0f0f0; /* Optional: Hintergrundfarbe */
+  overflow: hidden;
+  background-color: #f0f0f0;
 }
 
 .image-container img {
-  object-fit: none; /* Verhindert Skalierung */
-  object-position: center; /* Zentriert das Bild */
-  max-width: none; /* Verhindert automatische Größenanpassung */
+  object-fit: none;
+  object-position: center;
+  max-width: none;
   max-height: none;
 }
-/*
+
 #specialbanner {
   background-color: #e54c4c;
   color: white;
 }
-*/
+
 .navbar-nav .nav-link:hover {
     color: #e54c4c !important;
 }
