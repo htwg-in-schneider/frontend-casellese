@@ -1,6 +1,6 @@
 <script setup>
 import { useAuth0 } from '@auth0/auth0-vue'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Navbar from '@/components/Navbar.vue'
 import Footer from '@/components/Footer.vue'
 
@@ -8,6 +8,7 @@ const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0()
 const profileData = ref(null)
 const bearerToken = ref('')
 const error = ref('')
+const imageError = ref(false)
 
 function copyToClipboard(event) {
   event.target.select()
@@ -24,6 +25,17 @@ function getRoleName(constant) {
       return constant;
   }
 }
+
+const handleImageError = () => {
+  imageError.value = true
+}
+
+const profilePicture = computed(() => {
+  if (imageError.value || !user.value?.picture) {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.value?.name || 'User')}&background=0D8ABC&color=fff&size=256`
+  }
+  return user.value.picture
+})
 
 onMounted(async () => {
   if (isAuthenticated.value) {
@@ -65,8 +77,8 @@ onMounted(async () => {
       </div>
       <div class="card-body text-center">
         <div v-if="profileData">
-          <img :src="user.picture" :alt="user.name" class="rounded-circle mb-3 border border-3 border-primary"
-            width="150" height="150">
+          <img :src="profilePicture" :alt="user?.name || 'User'" class="rounded-circle mb-3 border border-3 border-primary"
+            width="150" height="150" @error="handleImageError">
           <h4 class="card-title">{{ profileData.name }}</h4>
           <p class="card-text text-muted">{{ profileData.email }}</p>
           <p><strong>Rolle:</strong> {{ getRoleName(profileData.role) }}</p>
