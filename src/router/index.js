@@ -12,6 +12,7 @@ import AGBView from '../views/Agbview.vue';
 import DatenschutzView from '../views/Datenschutzview.vue';
 import WiderrufView from '../views/WiderrufView.vue';
 import VersandView from '../views/Versandview.vue';
+import TeamView from '@/views/TeamView.vue';
 
 const routes = [
   // Öffentliche Routen
@@ -58,7 +59,12 @@ const routes = [
     name: 'versand',
     component: VersandView
   },
-  
+  {
+    path: '/team',
+    name: 'team',
+    component: TeamView
+  },
+
   // Geschützte Routen (erfordern Login)
   {
     path: '/product/create',
