@@ -108,9 +108,13 @@ onMounted(() => {
 
       <!-- Dynamische Rezept-Karten -->
       <template v-else-if="featuredRecipes.length > 0">
-        <div v-for="recipe in featuredRecipes" :key="recipe.id" class="card mb-4 p-3 rounded-4 shadow-sm">
+        <router-link 
+          v-for="recipe in featuredRecipes" 
+          :key="recipe.id" 
+          :to="'/product/' + recipe.id"
+          class="card mb-4 p-3 rounded-4 shadow-sm text-decoration-none text-dark">
           <div class="row g-0 align-items-center">
-            <div class="col-4">
+            <div class="col-4 image-wrapper">
               <img :src="recipe.imageUrl || 'https://nucccio.github.io/casellese-images/placeholder.webp'" 
                    class="img-fluid rounded-3 recipe-image" 
                    :alt="recipe.title">
@@ -122,21 +126,21 @@ onMounted(() => {
                   <p class="card-text medium mt-1">{{ recipe.description }}</p>
                 </div>
                 <div class="d-flex align-items-center">
-                  <router-link :to="'/product/' + recipe.id" class="text-danger fs-3">
+                  <span class="text-danger fs-3">
                     <i class="bi bi-arrow-right"></i>
-                  </router-link>
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </template>
 
       <!-- Fallback: Statische Rezepte wenn keine Daten -->
       <template v-else>
-        <div class="card mb-4 p-3 rounded-4 shadow-sm">
+        <router-link to="/rezepte" class="card mb-4 p-3 rounded-4 shadow-sm text-decoration-none text-dark">
           <div class="row g-0 align-items-center">
-            <div class="col-4">
+            <div class="col-4 image-wrapper">
               <img src="https://nucccio.github.io/casellese-images/caciocavallo.webp"
                    class="img-fluid rounded-3 recipe-image" 
                    alt="Caciocavallo Käse vor Berglandschaft">
@@ -148,16 +152,16 @@ onMounted(() => {
                   <p class="card-text medium mt-1">Caciocavallo ist ein italienischer Kult-Käse mit unverwechselbarer birnenförmiger Gestalt, der traditionell paarweise an der Schnur hängt</p>
                 </div>
                 <div class="d-flex align-items-center">
-                  <router-link to="/rezepte" class="text-danger fs-3"><i class="bi bi-arrow-right"></i></router-link>
+                  <span class="text-danger fs-3"><i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
 
-        <div class="card mb-4 p-3 rounded-4 shadow-sm">
+        <router-link to="/rezepte" class="card mb-4 p-3 rounded-4 shadow-sm text-decoration-none text-dark">
           <div class="row g-0 align-items-center">
-            <div class="col-4">
+            <div class="col-4 image-wrapper">
               <img src="https://nucccio.github.io/casellese-images/salsiccia.webp" 
                    class="img-fluid rounded-3 recipe-image"
                    alt="Salsiccia Würste hängend">
@@ -169,16 +173,16 @@ onMounted(() => {
                   <p class="card-text medium mt-1">Salsiccia ist eine traditionelle italienische Wurst aus fein gewürztem Schweinefleisch, oft mit Knoblauch, Fenchel oder Chili verfeinert.</p>
                 </div>
                 <div class="d-flex align-items-center">
-                  <router-link to="/rezepte" class="text-danger fs-3"><i class="bi bi-arrow-right"></i></router-link>
+                  <span class="text-danger fs-3"><i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
 
-        <div class="card p-3 rounded-4 shadow-sm">
+        <router-link to="/rezepte" class="card p-3 rounded-4 shadow-sm text-decoration-none text-dark">
           <div class="row g-0 align-items-center">
-            <div class="col-4">
+            <div class="col-4 image-wrapper">
               <img src="https://nucccio.github.io/casellese-images/brot.webp" 
                    class="img-fluid rounded-3 recipe-image"
                    alt="Brot im Ofen gebacken">
@@ -190,12 +194,12 @@ onMounted(() => {
                   <p class="card-text medium mt-1">Brot ist das zeitlose Grundnahrungsmittel, frisch gebacken mit knuspriger Kruste und weichem Inneren.</p>
                 </div>
                 <div class="d-flex align-items-center">
-                  <router-link to="/rezepte" class="text-danger fs-3"><i class="bi bi-arrow-right"></i></router-link>
+                  <span class="text-danger fs-3"><i class="bi bi-arrow-right"></i></span>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </router-link>
       </template>
 
     </div>
@@ -245,6 +249,26 @@ onMounted(() => {
 .recipe-image {
   height: 180px;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+/* Hover-Effekt für Top-Rezepte Karten */
+.recipes-container .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.recipes-container .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+.recipes-container .card:hover .bi-arrow-right {
+  transform: translateX(5px);
+}
+
+.recipes-container .card .bi-arrow-right {
+  transition: transform 0.3s ease;
 }
 
 .logo-cta {
