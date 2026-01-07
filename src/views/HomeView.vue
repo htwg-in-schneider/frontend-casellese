@@ -36,7 +36,7 @@ onMounted(() => {
         <h1 class="fw-bold m-0 display-3">Caselle in Pittari</h1>
       </div>
       <div class="d-flex align-items-end">
-        <router-link to="/rezepte" class="btn btn-accent btn-lg">Erfahre mehr →</router-link>
+        <router-link to="/ueber-uns" class="btn btn-accent btn-lg">Erfahre mehr →</router-link>
       </div>
     </div>
   </div>
