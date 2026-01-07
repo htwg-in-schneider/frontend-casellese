@@ -22,21 +22,47 @@ watch([isAuthenticated, isLoading], async ([authenticated, loading]) => {
 </script>
 
 <template>
-  <!-- Special Banner -->
-  <SpecialBanner text="Sehen Sie unsere neuen Rezepte an ->" />
+  <div class="app-wrapper">
+    <!-- Special Banner -->
+    <SpecialBanner text="Sehen Sie unsere neuen Rezepte an ->" />
 
-  <!-- Navbar -->
-  <Navbar />
+    <!-- Navbar -->
+    <Navbar />
 
-  <!-- Main Content -->
-  <router-view></router-view>
+    <!-- Main Content -->
+    <main class="main-content">
+      <router-view></router-view>
+    </main>
 
-  <!-- Footer -->
-  <Footer />
+    <!-- Footer -->
+    <Footer />
+  </div>
 </template>
 
-<style scoped>
+<style>
+/* Sticky Footer Layout */
+html, body {
+  height: 100%;
+  margin: 0;
+}
 
+#app {
+  min-height: 100%;
+}
+
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1 0 auto;
+}
+
+footer, .footer {
+  flex-shrink: 0;
+}
 </style>
 
 <!-- Iteration 7 - Pinia State Management -->

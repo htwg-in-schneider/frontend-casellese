@@ -1,3 +1,4 @@
+
 <script setup>
 import { useBannerStore } from '@/stores/banner';
 import Button from '@/components/Button.vue';

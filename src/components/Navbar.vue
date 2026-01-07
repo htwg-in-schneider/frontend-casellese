@@ -33,12 +33,6 @@ const userStore = useUserStore()
                     <li class="nav-item">
                         <router-link class="nav-link" to="/kontakt">Kontakt</router-link>
                     </li>
-                    <!-- Admin Link - NUR für Admins sichtbar -->
-                    <li v-if="isAuthenticated && userStore.isAdmin" class="nav-item">
-                        <router-link class="nav-link text-success fw-bold" to="/product/create">
-                            ➕ Neues Produkt
-                        </router-link>
-                    </li>
                 </ul>
                 <form class="d-flex ms-auto">
                     <input class="form-control me-2" type="search" placeholder="Suche...">

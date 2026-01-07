@@ -5,26 +5,41 @@ defineProps({
     product: {
         type: Object,
         required: true,
+    },
+    showEditButton: {
+        type: Boolean,
+        default: false,
     }
 });
 </script>
 
 <template>
-  <router-link 
-    :to="{ name: 'product', params: { id: product.id } }" 
-    class="card h-100 text-decoration-none rounded-5" 
-  >
-    <img 
-      :src="product.imageUrl" 
-      class="card-img-top" 
-      :alt="product.title"
-    />
-    <div class="card-body d-flex flex-column">
-      <h5 class="card-title fw-bold text-dark">{{ product.title }}</h5>
-      <p class="card-text text-secondary">{{ product.description }} </p> 
-      <p class="card-text text-accent fw-bold mt-auto">{{ product.price }} €</p>
+  <div class="card h-100 rounded-5">
+    <router-link 
+      :to="{ name: 'product', params: { id: product.id } }" 
+      class="text-decoration-none" 
+    >
+      <img 
+        :src="product.imageUrl" 
+        class="card-img-top" 
+        :alt="product.title"
+      />
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title fw-bold text-dark">{{ product.title }}</h5>
+        <p class="card-text text-secondary">{{ product.description }} </p> 
+        <p class="card-text text-accent fw-bold mt-auto">{{ product.price }} €</p>
+      </div>
+    </router-link>
+    <!-- Edit Button für Admins -->
+    <div v-if="showEditButton" class="card-footer bg-transparent border-0 pb-3 px-3">
+      <router-link 
+        :to="`/product/edit/${product.id}`" 
+        class="btn btn-outline-warning btn-sm w-100"
+      >
+        ✏️ Bearbeiten
+      </router-link>
     </div>
-  </router-link>
+  </div>
 </template>
 
 <style scoped>

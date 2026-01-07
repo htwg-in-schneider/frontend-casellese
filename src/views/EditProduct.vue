@@ -268,25 +268,16 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.btn-secondary {
-  background-color: #6c757d;
-  border-color: #6c757d;
-  color: white;
+/* Form-Styles im StyleTile-Design */
+.form-control:focus,
+.form-select:focus {
+  border-color: #e54c4c;
+  box-shadow: 0 0 0 0.2rem rgba(229, 76, 76, 0.15);
 }
 
-.btn-secondary:hover {
-  background-color: #5a6268;
-  border-color: #545b62;
-}
-
-.btn-danger {
-  background-color: #dc3545;
-  border-color: #dc3545;
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: #c82333;
-  border-color: #bd2130;
+.form-label {
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  color: #333;
 }
 </style>
