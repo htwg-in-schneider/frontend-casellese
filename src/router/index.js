@@ -15,6 +15,7 @@ import VersandView from '../views/VersandView.vue';
 import TeamView from '@/views/TeamView.vue';
 import NewsletterView from '@/views/NewsletterView.vue';
 import AboutView from '@/views/AboutView.vue';
+import FavoritesView from '@/views/FavoritesView.vue'
 import { useUserStore } from '@/stores/user';
 
 // Admin Guard: Prüft ob User eingeloggt UND Admin ist
@@ -102,6 +103,11 @@ const routes = [
     path: '/ueber-uns',
     name: 'about',
     component: AboutView
+  },
+  {
+  path: '/favoriten',
+  name: 'favorites',
+  component: FavoritesView
   },
 
   // Geschützte Routen (erfordern Login)
