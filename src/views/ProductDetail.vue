@@ -1,7 +1,8 @@
 <script setup>
 import { useRoute } from 'vue-router';
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
+import ShareButton from '@/components/Sharebutton.vue';
 
 const route = useRoute();
 const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -19,6 +20,11 @@ const isAdmin = ref(false);
 
 // Aktives Rezept für die Anzeige
 const activeRecipe = ref(null);
+
+// Computed URL für Share-Funktion
+const shareUrl = computed(() => {
+  return window.location.href;
+});
 
 // Admin-Check
 async function checkAdminRole() {
@@ -236,7 +242,14 @@ function downloadAsText(recipe) {
       </div>
 
       <div class="col-md-6">
-        <h1 class="display-6 fw-bold">{{ product.title }}</h1>
+        <div class="d-flex justify-content-between align-items-start mb-3">
+          <h1 class="display-6 fw-bold mb-0">{{ product.title }}</h1>
+          <ShareButton 
+            :title="product.title" 
+            :description="product.description"
+            :url="shareUrl"
+          />
+        </div>
         <p class="lead text-secondary">{{ product.description }}</p>
 
         <div class="mb-4">
@@ -265,8 +278,15 @@ function downloadAsText(recipe) {
         <!-- Aktives Rezept Anzeige -->
         <div v-if="activeRecipe" class="mt-4 p-4 bg-light rounded-4">
           <div class="d-flex justify-content-between align-items-start mb-3">
-            <h4 class="fw-bold">{{ activeRecipe.title }}</h4>
-            <button @click="hideRecipe" class="btn-close" aria-label="Schließen"></button>
+            <h4 class="fw-bold mb-0">{{ activeRecipe.title }}</h4>
+            <div class="d-flex gap-2 align-items-center">
+              <ShareButton 
+                :title="`${activeRecipe.title} - ${product.title}`" 
+                :description="`Rezept: ${activeRecipe.title} für ${product.title}`"
+                :url="shareUrl"
+              />
+              <button @click="hideRecipe" class="btn-close" aria-label="Schließen"></button>
+            </div>
           </div>
           <div v-html="formatMarkdown(activeRecipe.text)" class="recipe-content"></div>
           
