@@ -182,6 +182,9 @@ async function saveRecipe() {
 
   isSubmitting.value = true;
 
+  // Debug: Zeige was gesendet wird
+  console.log('Sending recipe data:', JSON.stringify(recipeForm.value, null, 2));
+
   try {
     const token = await getAccessTokenSilently();
     
@@ -195,6 +198,10 @@ async function saveRecipe() {
         },
         body: JSON.stringify(recipeForm.value)
       });
+
+      // Debug: Zeige Antwort
+      const responseData = await response.json();
+      console.log('Server response:', responseData);
 
       if (!response.ok) {
         throw new Error(`Fehler beim Aktualisieren: ${response.status}`);
@@ -211,6 +218,10 @@ async function saveRecipe() {
         },
         body: JSON.stringify(recipeForm.value)
       });
+
+      // Debug: Zeige Antwort
+      const responseData = await response.json();
+      console.log('Server response:', responseData);
 
       if (!response.ok) {
         throw new Error(`Fehler beim Erstellen: ${response.status}`);

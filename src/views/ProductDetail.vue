@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import ShareButton from '@/components/ShareButton.vue';              // Fehler wird nicht behoben, github pages deploy problem
+import ShareButton from '@/components/ShareButton.vue';            // Fehler bleibt wegen github deployment
 import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute();
@@ -363,8 +363,11 @@ function downloadAsText(recipe) {
             </div>
           </div>
 
-          <!-- YouTube Video Embed -->
-          <div v-if="activeRecipe.youtubeUrl && getYoutubeEmbedUrl(activeRecipe.youtubeUrl)" class="youtube-embed mb-4">
+          <div v-html="formatMarkdown(activeRecipe.text)" class="recipe-content"></div>
+
+          <!-- YouTube Video Embed (nach Zutaten & Zubereitung) -->
+          <div v-if="activeRecipe.youtubeUrl && getYoutubeEmbedUrl(activeRecipe.youtubeUrl)" class="youtube-embed mt-4">
+            <h4 class="recipe-heading">Video-Anleitung</h4>
             <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
               <iframe 
                 :src="getYoutubeEmbedUrl(activeRecipe.youtubeUrl)"
@@ -375,11 +378,9 @@ function downloadAsText(recipe) {
               ></iframe>
             </div>
           </div>
-
-          <div v-html="formatMarkdown(activeRecipe.text)" class="recipe-content"></div>
           
           <!-- PDF Download - nur für eingeloggte User -->
-          <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
+          <div class="mt-4 d-flex flex-wrap gap-2 align-items-center">
             <button 
               v-if="isAuthenticated"
               @click="downloadRecipePdf(activeRecipe)"
@@ -394,16 +395,6 @@ function downloadAsText(recipe) {
                 📄 Rezept als PDF herunterladen
               </span>
             </button>
-            
-            <!-- YouTube Link Button (falls Video vorhanden) -->
-            <a 
-              v-if="activeRecipe.youtubeUrl"
-              :href="activeRecipe.youtubeUrl"
-              target="_blank"
-              class="btn btn-youtube"
-            >
-              ▶️ Auf YouTube ansehen
-            </a>
             
             <!-- Hinweis für nicht eingeloggte User -->
             <div v-if="!isAuthenticated" class="alert alert-info mb-0 flex-grow-1">
@@ -617,6 +608,12 @@ function downloadAsText(recipe) {
 
 .youtube-embed .ratio {
   border: 1px solid #e0e0e0;
+}
+
+.youtube-embed .recipe-heading {
+  color: #e54c4c;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
 /* Rezept Liste */
