@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import ShareButton from '@/components/Sharebutton.vue';
+import ShareButton from '@/components/ShareButton.vue';
 import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute();
