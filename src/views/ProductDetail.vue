@@ -2,7 +2,7 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
-import ShareButton from '@/components/ShareButton.vue';
+import ShareButton from '@/components/ShareButton.vue';              // Fehler wird nicht behoben, github pages deploy problem
 import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute();
@@ -26,6 +26,30 @@ const activeRecipe = ref(null);
 const shareUrl = computed(() => {
   return window.location.href;
 });
+
+// YouTube Video-ID aus URL extrahieren
+function getYoutubeVideoId(url) {
+  if (!url) return null;
+  
+  // Verschiedene YouTube URL-Formate unterstützen
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+    /youtube\.com\/shorts\/([^&\n?#]+)/
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
+}
+
+// YouTube Embed URL generieren
+function getYoutubeEmbedUrl(url) {
+  const videoId = getYoutubeVideoId(url);
+  if (!videoId) return null;
+  return `https://www.youtube.com/embed/${videoId}`;
+}
 
 // Admin-Check
 async function checkAdminRole() {
@@ -101,13 +125,54 @@ function hideRecipe() {
 // Markdown zu HTML konvertieren
 function formatMarkdown(text) {
     if (!text) return '';
-    return text
-        .replace(/^## (.+)$/gm, '<h4 class="mt-3 mb-2 fw-bold">$1</h4>')
-        .replace(/^- (.+)$/gm, '<li>$1</li>')
-        .replace(/(<li>.*<\/li>)/s, '<ul class="mb-3">$1</ul>')
-        .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-        .replace(/\n\n/g, '<br><br>')
-        .replace(/\n/g, '<br>');
+    
+    // Text in Zeilen aufteilen
+    const lines = text.split('\n');
+    let result = [];
+    let inUnorderedList = false;
+    let inOrderedList = false;
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        
+        // Überschriften
+        if (line.match(/^## (.+)$/)) {
+            // Listen schließen falls offen
+            if (inUnorderedList) { result.push('</ul>'); inUnorderedList = false; }
+            if (inOrderedList) { result.push('</ol>'); inOrderedList = false; }
+            result.push(line.replace(/^## (.+)$/, '<h4 class="recipe-heading">$1</h4>'));
+        }
+        // Ungeordnete Liste (- Item)
+        else if (line.match(/^- (.+)$/)) {
+            if (inOrderedList) { result.push('</ol>'); inOrderedList = false; }
+            if (!inUnorderedList) { result.push('<ul class="recipe-list">'); inUnorderedList = true; }
+            result.push(line.replace(/^- (.+)$/, '<li>$1</li>'));
+        }
+        // Geordnete Liste (1. Item)
+        else if (line.match(/^\d+\. (.+)$/)) {
+            if (inUnorderedList) { result.push('</ul>'); inUnorderedList = false; }
+            if (!inOrderedList) { result.push('<ol class="recipe-list">'); inOrderedList = true; }
+            result.push(line.replace(/^\d+\. (.+)$/, '<li>$1</li>'));
+        }
+        // Leere Zeile
+        else if (line.trim() === '') {
+            if (inUnorderedList) { result.push('</ul>'); inUnorderedList = false; }
+            if (inOrderedList) { result.push('</ol>'); inOrderedList = false; }
+            result.push('<br>');
+        }
+        // Normaler Text
+        else {
+            if (inUnorderedList) { result.push('</ul>'); inUnorderedList = false; }
+            if (inOrderedList) { result.push('</ol>'); inOrderedList = false; }
+            result.push(`<p class="recipe-text">${line}</p>`);
+        }
+    }
+    
+    // Listen am Ende schließen
+    if (inUnorderedList) result.push('</ul>');
+    if (inOrderedList) result.push('</ol>');
+    
+    return result.join('');
 }
 
 // PDF generieren und herunterladen
@@ -297,10 +362,24 @@ function downloadAsText(recipe) {
               <button @click="hideRecipe" class="btn-close" aria-label="Schließen"></button>
             </div>
           </div>
+
+          <!-- YouTube Video Embed -->
+          <div v-if="activeRecipe.youtubeUrl && getYoutubeEmbedUrl(activeRecipe.youtubeUrl)" class="youtube-embed mb-4">
+            <div class="ratio ratio-16x9 rounded-3 overflow-hidden shadow-sm">
+              <iframe 
+                :src="getYoutubeEmbedUrl(activeRecipe.youtubeUrl)"
+                title="Rezept Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+
           <div v-html="formatMarkdown(activeRecipe.text)" class="recipe-content"></div>
           
           <!-- PDF Download - nur für eingeloggte User -->
-          <div class="mt-3">
+          <div class="mt-3 d-flex flex-wrap gap-2 align-items-center">
             <button 
               v-if="isAuthenticated"
               @click="downloadRecipePdf(activeRecipe)"
@@ -315,8 +394,19 @@ function downloadAsText(recipe) {
                 📄 Rezept als PDF herunterladen
               </span>
             </button>
+            
+            <!-- YouTube Link Button (falls Video vorhanden) -->
+            <a 
+              v-if="activeRecipe.youtubeUrl"
+              :href="activeRecipe.youtubeUrl"
+              target="_blank"
+              class="btn btn-youtube"
+            >
+              ▶️ Auf YouTube ansehen
+            </a>
+            
             <!-- Hinweis für nicht eingeloggte User -->
-            <div v-if="!isAuthenticated" class="alert alert-info mb-0">
+            <div v-if="!isAuthenticated" class="alert alert-info mb-0 flex-grow-1">
               <small>
                 <i class="bi bi-info-circle me-1"></i>
                 Logge dich ein, um das Rezept als PDF herunterzuladen.
@@ -451,14 +541,44 @@ function downloadAsText(recipe) {
   font-family: 'Inter', sans-serif;
 }
 
-.recipe-content :deep(h4) {
+.recipe-content :deep(.recipe-heading) {
   color: #e54c4c;
   font-weight: 600;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
-.recipe-content :deep(ul),
-.recipe-content :deep(ol) {
-  padding-left: 1.5rem;
+.recipe-content :deep(.recipe-heading:first-child) {
+  margin-top: 0;
+}
+
+.recipe-content :deep(.recipe-list) {
+  margin: 0 0 1rem 0;
+  padding-left: 1.25rem;
+  list-style-position: outside;
+}
+
+.recipe-content :deep(ul.recipe-list) {
+  list-style-type: disc;
+}
+
+.recipe-content :deep(ol.recipe-list) {
+  list-style-type: decimal;
+}
+
+.recipe-content :deep(.recipe-list li) {
+  margin-bottom: 0.35rem;
+  padding-left: 0.25rem;
+}
+
+.recipe-content :deep(.recipe-text) {
+  margin: 0.5rem 0;
+}
+
+.recipe-content :deep(br) {
+  display: block;
+  content: "";
+  margin: 0.5rem 0;
 }
 
 /* Alert im StyleTile-Design */
@@ -467,6 +587,36 @@ function downloadAsText(recipe) {
   border: 1px solid #c9c9c9;
   color: #333;
   border-radius: 8px;
+}
+
+/* YouTube Button */
+.btn-youtube {
+  background-color: #ff0000;
+  border: 2px solid #ff0000;
+  color: #ffffff;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 0.375rem 1rem;
+  transition: all 0.2s ease;
+}
+
+.btn-youtube:hover {
+  background-color: #cc0000;
+  border-color: #cc0000;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+}
+
+/* YouTube Video Embed */
+.youtube-embed {
+  max-width: 100%;
+}
+
+.youtube-embed .ratio {
+  border: 1px solid #e0e0e0;
 }
 
 /* Rezept Liste */

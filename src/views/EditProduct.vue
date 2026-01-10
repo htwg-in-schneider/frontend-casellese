@@ -23,7 +23,8 @@ const editingRecipe = ref(null);
 const recipeForm = ref({
   title: '',
   text: '',
-  pdfUrl: ''
+  pdfUrl: '',
+  youtubeUrl: ''
 });
 
 // Kategorien laden
@@ -149,7 +150,7 @@ async function deleteProduct() {
 // Neues Rezept Formular öffnen
 function openNewRecipeForm() {
   editingRecipe.value = null;
-  recipeForm.value = { title: '', text: '', pdfUrl: '' };
+  recipeForm.value = { title: '', text: '', pdfUrl: '', youtubeUrl: '' };
   showRecipeForm.value = true;
 }
 
@@ -159,7 +160,8 @@ function openEditRecipeForm(recipe) {
   recipeForm.value = {
     title: recipe.title,
     text: recipe.text || '',
-    pdfUrl: recipe.pdfUrl || ''
+    pdfUrl: recipe.pdfUrl || '',
+    youtubeUrl: recipe.youtubeUrl || ''
   };
   showRecipeForm.value = true;
 }
@@ -168,7 +170,7 @@ function openEditRecipeForm(recipe) {
 function closeRecipeForm() {
   showRecipeForm.value = false;
   editingRecipe.value = null;
-  recipeForm.value = { title: '', text: '', pdfUrl: '' };
+  recipeForm.value = { title: '', text: '', pdfUrl: '', youtubeUrl: '' };
 }
 
 // Rezept speichern (Create oder Update)
@@ -449,9 +451,14 @@ onMounted(async () => {
                         <p v-if="recipe.text" class="text-muted small mb-0 recipe-preview">
                           {{ recipe.text.substring(0, 100) }}{{ recipe.text.length > 100 ? '...' : '' }}
                         </p>
-                        <a v-if="recipe.pdfUrl" :href="recipe.pdfUrl" target="_blank" class="small text-accent">
-                          📄 PDF ansehen
-                        </a>
+                        <div class="d-flex flex-wrap gap-2 mt-1">
+                          <a v-if="recipe.pdfUrl" :href="recipe.pdfUrl" target="_blank" class="small text-accent">
+                            📄 PDF ansehen
+                          </a>
+                          <a v-if="recipe.youtubeUrl" :href="recipe.youtubeUrl" target="_blank" class="small text-danger">
+                            ▶️ YouTube Video
+                          </a>
+                        </div>
                       </div>
                       <div class="d-flex gap-1 ms-2">
                         <button 
@@ -512,6 +519,22 @@ onMounted(async () => {
                       v-model="recipeForm.pdfUrl"
                       placeholder="https://example.com/rezept.pdf"
                     />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="recipeYoutubeUrl" class="form-label">
+                      <span class="text-danger">▶️</span> YouTube-URL (optional)
+                    </label>
+                    <input 
+                      type="url" 
+                      id="recipeYoutubeUrl" 
+                      class="form-control" 
+                      v-model="recipeForm.youtubeUrl"
+                      placeholder="https://www.youtube.com/watch?v=..."
+                    />
+                    <small class="text-muted">
+                      Füge einen YouTube-Link hinzu, um ein Video zum Rezept anzuzeigen
+                    </small>
                   </div>
 
                   <div class="d-flex gap-2">
