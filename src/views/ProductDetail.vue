@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 import ShareButton from '@/components/Sharebutton.vue';
+import FavoriteButton from '@/components/FavoriteButton.vue';
 
 const route = useRoute();
 const { isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -252,8 +253,15 @@ function downloadAsText(recipe) {
         </div>
         <p class="lead text-secondary">{{ product.description }}</p>
 
+        <!-- Produkt anfragen Button -->
         <div class="mb-4">
-            <span class="fs-5 fw-bold text-accent">{{ product.price }} €</span>
+            <a 
+              :href="`mailto:info@ricetti-in-pittari.de?subject=Produktanfrage: ${encodeURIComponent(product.title)}&body=Hallo,%0A%0Aich interessiere mich für das Produkt '${encodeURIComponent(product.title)}'.%0A%0ABitte senden Sie mir weitere Informationen zu.%0A%0AMit freundlichen Grüßen`"
+              class="btn btn-accent btn-lg"
+            >
+              <i class="bi bi-envelope me-2"></i>
+              Produkt anfragen
+            </a>
         </div>
         
         <p v-if="product.ingredients">
@@ -262,16 +270,21 @@ function downloadAsText(recipe) {
 
         <!-- Rezepte Section -->
         <div v-if="recipes && recipes.length > 0" class="mt-4">
-          <h3 class="fw-bold mb-3">🍳 Rezepte</h3>
-          <div class="d-flex flex-wrap gap-2">
-            <button 
+          <h3 class="fw-bold mb-3">🤌 Rezepte</h3>
+          <div class="recipe-list">
+            <div 
               v-for="recipe in recipes" 
               :key="recipe.id"
-              @click="showRecipe(recipe)"
-              class="btn btn-outline-accent"
+              class="recipe-item d-flex align-items-center justify-content-between p-3 mb-2 rounded-3"
             >
-              {{ recipe.title }}
-            </button>
+              <button 
+                @click="showRecipe(recipe)"
+                class="btn btn-outline-accent flex-grow-1 me-2 text-start"
+              >
+                {{ recipe.title }}
+              </button>
+              <FavoriteButton :recipe-id="recipe.id" size="sm" />
+            </div>
           </div>
         </div>
 
@@ -280,11 +293,7 @@ function downloadAsText(recipe) {
           <div class="d-flex justify-content-between align-items-start mb-3">
             <h4 class="fw-bold mb-0">{{ activeRecipe.title }}</h4>
             <div class="d-flex gap-2 align-items-center">
-              <ShareButton 
-                :title="`${activeRecipe.title} - ${product.title}`" 
-                :description="`Rezept: ${activeRecipe.title} für ${product.title}`"
-                :url="shareUrl"
-              />
+              <FavoriteButton :recipe-id="activeRecipe.id" />
               <button @click="hideRecipe" class="btn-close" aria-label="Schließen"></button>
             </div>
           </div>
@@ -458,5 +467,19 @@ function downloadAsText(recipe) {
   border: 1px solid #c9c9c9;
   color: #333;
   border-radius: 8px;
+}
+
+/* Rezept Liste */
+.recipe-list {
+  max-width: 100%;
+}
+
+.recipe-item {
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+}
+
+.recipe-item:hover {
+  background-color: #f0f0f0;
 }
 </style>

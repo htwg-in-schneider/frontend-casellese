@@ -1,10 +1,11 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
+import { useAuth0 } from '@auth0/auth0-vue';
 
 const props = defineProps({
   title: {
     type: String,
-    required: true
+    default: ''
   },
   description: {
     type: String,
@@ -16,58 +17,32 @@ const props = defineProps({
   }
 });
 
-const showDropdown = ref(false);
+const { isAuthenticated, loginWithRedirect } = useAuth0();
+
 const showCopiedToast = ref(false);
+const showLoginHint = ref(false);
 
-// Prüfe ob Web Share API verfügbar ist
-const canUseWebShare = computed(() => {
-  return navigator.share !== undefined;
-});
-
-// Native Share API nutzen (Mobile)
-async function nativeShare() {
-  try {
-    await navigator.share({
-      title: props.title,
-      text: props.description || `Schau dir dieses Rezept an: ${props.title}`,
-      url: props.url
-    });
-    showDropdown.value = false;
-  } catch (err) {
-    if (err.name !== 'AbortError') {
-      console.error('Fehler beim Teilen:', err);
-    }
+// Link kopieren oder Login-Hinweis zeigen
+async function handleClick() {
+  // Prüfe ob User eingeloggt ist
+  if (!isAuthenticated.value) {
+    showLoginHint.value = true;
+    setTimeout(() => {
+      showLoginHint.value = false;
+    }, 3000);
+    return;
   }
+  
+  // User ist eingeloggt - Link kopieren
+  await copyLink();
 }
 
-// WhatsApp teilen
-function shareWhatsApp() {
-  const text = encodeURIComponent(`${props.title}\n\n${props.description}\n\n${props.url}`);
-  window.open(`https://wa.me/?text=${text}`, '_blank');
-  showDropdown.value = false;
-}
-
-// Per E-Mail teilen
-function shareEmail() {
-  const subject = encodeURIComponent(`Rezept: ${props.title}`);
-  const body = encodeURIComponent(`Hallo!\n\nSchau dir dieses leckere Rezept an:\n\n${props.title}\n${props.description}\n\n${props.url}\n\nGuten Appetit! 🍝`);
-  window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  showDropdown.value = false;
-}
-
-// Facebook teilen
-function shareFacebook() {
-  const url = encodeURIComponent(props.url);
-  window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=400');
-  showDropdown.value = false;
-}
-
-// Twitter/X teilen
-function shareTwitter() {
-  const text = encodeURIComponent(`${props.title} - ${props.description}`);
-  const url = encodeURIComponent(props.url);
-  window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'width=600,height=400');
-  showDropdown.value = false;
+// Zum Login weiterleiten
+async function goToLogin() {
+  showLoginHint.value = false;
+  await loginWithRedirect({
+    appState: { targetUrl: window.location.pathname }
+  });
 }
 
 // Link kopieren
@@ -78,7 +53,6 @@ async function copyLink() {
     setTimeout(() => {
       showCopiedToast.value = false;
     }, 2000);
-    showDropdown.value = false;
   } catch (err) {
     // Fallback für ältere Browser
     const textArea = document.createElement('textarea');
@@ -91,82 +65,51 @@ async function copyLink() {
     setTimeout(() => {
       showCopiedToast.value = false;
     }, 2000);
-    showDropdown.value = false;
   }
-}
-
-// Dropdown toggle
-function toggleDropdown() {
-  showDropdown.value = !showDropdown.value;
-}
-
-// Dropdown schließen bei Klick außerhalb
-function closeDropdown() {
-  showDropdown.value = false;
 }
 </script>
 
 <template>
-  <div class="share-container" v-click-outside="closeDropdown">
-    <!-- Share Button -->
+  <div class="share-container">
+    <!-- Link kopieren Button -->
     <button 
-      @click="toggleDropdown" 
+      @click="handleClick" 
       class="btn btn-share"
-      :class="{ 'active': showDropdown }"
-      title="Teilen"
+      :class="{ 'copied': showCopiedToast }"
+      :title="showCopiedToast ? 'Link kopiert!' : 'Link kopieren'"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3"></circle>
-        <circle cx="6" cy="12" r="3"></circle>
-        <circle cx="18" cy="19" r="3"></circle>
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+      <!-- Icon: Link/Kopieren -->
+      <svg v-if="!showCopiedToast" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
       </svg>
-      <span class="ms-2">Teilen</span>
+      <!-- Icon: Checkmark wenn kopiert -->
+      <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span class="ms-2">{{ showCopiedToast ? 'Kopiert!' : 'Link kopieren' }}</span>
     </button>
 
-    <!-- Dropdown Menu -->
-    <Transition name="dropdown">
-      <div v-if="showDropdown" class="share-dropdown">
-        <!-- Native Share (nur auf unterstützten Geräten) -->
-        <button v-if="canUseWebShare" @click="nativeShare" class="share-option">
-          <span class="share-icon">📱</span>
-          <span>Teilen via...</span>
-        </button>
-        
-        <button @click="shareWhatsApp" class="share-option">
-          <span class="share-icon">💬</span>
-          <span>WhatsApp</span>
-        </button>
-        
-        <button @click="shareEmail" class="share-option">
-          <span class="share-icon">✉️</span>
-          <span>E-Mail</span>
-        </button>
-        
-        <button @click="shareFacebook" class="share-option">
-          <span class="share-icon">📘</span>
-          <span>Facebook</span>
-        </button>
-        
-        <button @click="shareTwitter" class="share-option">
-          <span class="share-icon">🐦</span>
-          <span>X (Twitter)</span>
-        </button>
-        
-        <hr class="share-divider">
-        
-        <button @click="copyLink" class="share-option">
-          <span class="share-icon">🔗</span>
-          <span>Link kopieren</span>
-        </button>
+    <!-- Login Hinweis -->
+    <Transition name="hint">
+      <div v-if="showLoginHint" class="login-hint">
+        <div class="login-hint-content">
+          <i class="bi bi-info-circle me-2"></i>
+          <span>Bitte melde dich an, um den Link zu kopieren.</span>
+          <button @click="goToLogin" class="btn btn-login-hint ms-3">
+            Anmelden
+          </button>
+          <button @click="showLoginHint = false" class="btn-close-hint" aria-label="Schließen">
+            ✕
+          </button>
+        </div>
       </div>
     </Transition>
 
     <!-- Toast für "Link kopiert" -->
     <Transition name="toast">
       <div v-if="showCopiedToast" class="copy-toast">
-        ✓ Link kopiert!
+        ✓ Link in Zwischenablage kopiert!
       </div>
     </Transition>
   </div>
@@ -199,57 +142,72 @@ function closeDropdown() {
   transition: all 0.2s ease;
 }
 
-.btn-share:hover,
-.btn-share.active {
+.btn-share:hover {
   background-color: #e54c4c;
   color: #ffffff;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(229, 76, 76, 0.3);
 }
 
-/* Dropdown */
-.share-dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  min-width: 200px;
-  background-color: #ffffff;
-  border: 1px solid #c9c9c9;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  padding: 8px 0;
-  z-index: 1000;
+.btn-share.copied {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #ffffff;
 }
 
-.share-option {
+/* Login Hinweis */
+.login-hint {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+}
+
+.login-hint-content {
   display: flex;
   align-items: center;
-  width: 100%;
-  padding: 10px 16px;
-  background: none;
-  border: none;
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+  padding: 12px 16px;
+  border-radius: 8px;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.15s ease;
-  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.share-option:hover {
-  background-color: #f0f0f0;
-}
-
-.share-icon {
-  width: 24px;
-  margin-right: 12px;
-  font-size: 16px;
-}
-
-.share-divider {
-  margin: 8px 16px;
+.btn-login-hint {
+  background-color: #e54c4c;
   border: none;
-  border-top: 1px solid #c9c9c9;
+  color: #ffffff;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-login-hint:hover {
+  background-color: #d43c3c;
+}
+
+.btn-close-hint {
+  background: none;
+  border: none;
+  color: #856404;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 12px;
+  padding: 0 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.btn-close-hint:hover {
+  opacity: 1;
 }
 
 /* Toast */
@@ -258,7 +216,7 @@ function closeDropdown() {
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #333;
+  background-color: #28a745;
   color: #ffffff;
   padding: 12px 24px;
   border-radius: 8px;
@@ -270,17 +228,6 @@ function closeDropdown() {
 }
 
 /* Animations */
-.dropdown-enter-active,
-.dropdown-leave-active {
-  transition: all 0.2s ease;
-}
-
-.dropdown-enter-from,
-.dropdown-leave-to {
-  opacity: 0;
-  transform: translateY(-8px);
-}
-
 .toast-enter-active,
 .toast-leave-active {
   transition: all 0.3s ease;
@@ -290,5 +237,16 @@ function closeDropdown() {
 .toast-leave-to {
   opacity: 0;
   transform: translate(-50%, 16px);
+}
+
+.hint-enter-active,
+.hint-leave-active {
+  transition: all 0.3s ease;
+}
+
+.hint-enter-from,
+.hint-leave-to {
+  opacity: 0;
+  transform: translate(-50%, -16px);
 }
 </style>

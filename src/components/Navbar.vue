@@ -1,16 +1,40 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth0 } from '@auth0/auth0-vue'
 import { useUserStore } from '@/stores/user'
+import { useFavoritesStore } from '@/stores/favorites'
 import UserMenu from './UserMenu.vue'
 
 const router = useRouter()
-const { isAuthenticated } = useAuth0()
+const { isAuthenticated, getAccessTokenSilently } = useAuth0()
 const userStore = useUserStore()
+const favoritesStore = useFavoritesStore()
 
 // Suchbegriff
 const searchQuery = ref('')
+
+// Favoriten laden wenn eingeloggt
+async function loadFavoriteIds() {
+    if (isAuthenticated.value) {
+        const apiBaseUrl = import.meta.env.VITE_API_BASE_URL
+        await favoritesStore.fetchFavoriteIds(getAccessTokenSilently, apiBaseUrl)
+    }
+}
+
+// Bei Login/Logout Favoriten aktualisieren
+watch(isAuthenticated, (newVal) => {
+    if (newVal) {
+        loadFavoriteIds()
+    } else {
+        favoritesStore.clearFavorites()
+    }
+})
+
+// Initial laden
+onMounted(() => {
+    loadFavoriteIds()
+})
 
 // Suche ausführen
 function handleSearch() {
@@ -52,6 +76,15 @@ function handleSearch() {
                     <li class="nav-item">
                         <router-link class="nav-link" to="/kontakt">Kontakt</router-link>
                     </li>
+                    <li v-if="isAuthenticated" class="nav-item">
+                        <router-link class="nav-link d-flex align-items-center" to="/merkliste">
+                            <i class="bi bi-heart-fill text-accent me-1"></i>
+                            Merkliste
+                            <span v-if="favoritesStore.count > 0" class="badge bg-accent ms-1">
+                                {{ favoritesStore.count }}
+                            </span>
+                        </router-link>
+                    </li>
                 </ul>
                 <form class="d-flex ms-auto" @submit.prevent="handleSearch">
                     <input 
@@ -75,5 +108,20 @@ function handleSearch() {
 
 .text-success {
     color: #198754 !important;
+}
+
+.text-accent {
+    color: #e54c4c !important;
+}
+
+.bg-accent {
+    background-color: #e54c4c !important;
+}
+
+.badge {
+    font-size: 0.7rem;
+    padding: 0.25em 0.5em;
+    border-radius: 50%;
+    min-width: 1.2em;
 }
 </style>
