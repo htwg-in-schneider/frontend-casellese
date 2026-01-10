@@ -8,6 +8,7 @@
             <div>
                 <h6>Informationen</h6>
                 <ul class="list-unstyled">
+                    <li><router-link to="/impressum" class="footer-link">Impressum</router-link></li>
                     <li><router-link to="/agb" class="footer-link">AGB</router-link></li>
                     <li><router-link to="/datenschutz" class="footer-link">Datenschutz</router-link></li>
                     <li><router-link to="/widerruf" class="footer-link">Widerrufsrecht</router-link></li>
