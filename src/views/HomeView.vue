@@ -30,13 +30,13 @@ onMounted(() => {
 <template>
   <!-- Hero Banner -->
   <div id="staticBanner" class="hero-banner d-flex align-items-end">
-    <div class="container d-flex justify-content-between pb-5">
-      <div>
-        <p class="lead m-0">Ein kleines Dorf mit Geschmack und Tradition.</p>
-        <h1 class="fw-bold m-0 display-3">Caselle in Pittari</h1>
-      </div>
-      <div class="d-flex align-items-end">
-        <router-link to="/ueber-uns" class="btn btn-accent btn-lg">Erfahre mehr →</router-link>
+    <div class="container pb-4 pb-md-5">
+      <div class="hero-content">
+        <p class="hero-subtitle lead m-0">Ein kleines Dorf mit Geschmack und Tradition.</p>
+        <h1 class="hero-title fw-bold m-0">Caselle in Pittari</h1>
+        <div class="hero-button mt-3">
+          <router-link to="/ueber-uns" class="btn btn-accent btn-lg">Erfahre mehr →</router-link>
+        </div>
       </div>
     </div>
   </div>
@@ -229,6 +229,60 @@ onMounted(() => {
   height: 80vh;
   background-position: center;
   color: white;
+}
+
+/* Hero Content - Desktop: nebeneinander, Mobile: gestapelt */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-between;  */
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.hero-title {
+  font-size: 3.5rem;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+  .hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .hero-banner {
+    height: 60vh;
+  }
+  
+  .hero-title {
+    font-size: 2.0rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .hero-button .btn {
+    width: 100%;
+    text-align: center;
+  }
 }
 
 .feature-section {

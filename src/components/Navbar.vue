@@ -55,7 +55,7 @@ function handleSearch() {
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm navbar-accent">
         <div class="container">
             <router-link class="navbar-brand fw-bold text-accent" to="/">
-                <img src="https://nucccio.github.io/casellese-images/logo_ricetti.webp" alt="Logo Ricetti" height="100" class="me-2">
+                <img src="https://nucccio.github.io/casellese-images/logo_ricetti.webp" alt="Logo Ricetti" class="navbar-logo me-2">
             </router-link>
 
             <div class="d-flex align-items-center order-lg-last">
@@ -104,6 +104,24 @@ function handleSearch() {
 <style scoped>
 .navbar-accent {
     border-bottom: 5px solid #e54c4c;
+}
+
+/* Responsive Logo */
+.navbar-logo {
+    height: 100px;
+    transition: height 0.2s ease;
+}
+
+@media (max-width: 991px) {
+    .navbar-logo {
+        height: 70px;
+    }
+}
+
+@media (max-width: 576px) {
+    .navbar-logo {
+        height: 55px;
+    }
 }
 
 .text-success {
