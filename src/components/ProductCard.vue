@@ -26,8 +26,7 @@ defineProps({
       />
       <div class="card-body d-flex flex-column">
         <h5 class="card-title fw-bold text-dark">{{ product.title }}</h5>
-        <p class="card-text text-secondary">{{ product.description }} </p> 
-        <p class="card-text text-accent fw-bold mt-auto">{{ product.price }} €</p>
+        <p class="card-text text-secondary">{{ product.description }}</p>
       </div>
     </router-link>
     <!-- Edit Button für Admins (StyleTile Design) -->

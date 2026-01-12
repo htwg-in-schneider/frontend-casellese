@@ -11,9 +11,7 @@ const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
 const product = ref({
   title: '',
-  price: 0,
   imageUrl: '',
-  imageUrlDetails: '',
   description: '',
   ingredients: '',
   category: '',
@@ -64,7 +62,7 @@ async function createProduct() {
     }
 
     alert('Produkt erfolgreich erstellt!');
-    router.push('/');
+    router.push('/rezepte');
   } catch (error) {
     errorMessage.value = error.message || 'Produkt konnte nicht erstellt werden.';
   } finally {
@@ -81,7 +79,9 @@ onMounted(() => {
   <div class="container py-5" style="min-height: 70vh;">
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-6">
-        <h2 class="fw-bold mb-4">🆕 Neues Produkt erstellen</h2>
+        <h2 class="fw-bold mb-4">
+          <i class="bi bi-plus-circle me-2"></i>Neues Produkt erstellen
+        </h2>
 
         <!-- Error Message -->
         <div v-if="errorMessage" class="alert alert-danger" role="alert">
@@ -113,40 +113,15 @@ onMounted(() => {
             </select>
           </div>
 
-          <!-- Preis -->
-          <div class="mb-3">
-            <label for="productPrice" class="form-label">Preis (€)</label>
-            <input 
-              type="number" 
-              id="productPrice" 
-              class="form-control" 
-              v-model="product.price" 
-              step="0.01"
-              min="0"
-            />
-          </div>
-
           <!-- Bild-URL -->
           <div class="mb-3">
-            <label for="productImageUrl" class="form-label">Bild-URL (Vorschau)</label>
+            <label for="productImageUrl" class="form-label">Bild-URL</label>
             <input 
               type="url" 
               id="productImageUrl" 
               class="form-control" 
               v-model="product.imageUrl" 
               placeholder="https://example.com/bild.jpg"
-            />
-          </div>
-
-          <!-- Detail Bild-URL -->
-          <div class="mb-3">
-            <label for="productImageUrlDetails" class="form-label">Bild-URL (Detailseite)</label>
-            <input 
-              type="url" 
-              id="productImageUrlDetails" 
-              class="form-control" 
-              v-model="product.imageUrlDetails" 
-              placeholder="https://example.com/bild-detail.jpg"
             />
           </div>
 
@@ -192,7 +167,7 @@ onMounted(() => {
             <Button type="submit" :disabled="isSubmitting">
               {{ isSubmitting ? 'Wird erstellt...' : 'Produkt erstellen' }}
             </Button>
-            <NavButton to="/" variant="secondary">Abbrechen</NavButton>
+            <NavButton to="/rezepte" variant="secondary">Abbrechen</NavButton>
           </div>
         </form>
       </div>
