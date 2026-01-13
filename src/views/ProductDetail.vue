@@ -301,12 +301,12 @@ function downloadAsText(recipe) {
     <!-- Product Detail -->
     <div v-else-if="product" class="row">
       <div class="col-md-6">
-        <img :src="product.imageUrlDetails || product.imageUrl" :alt="product.title" class="img-fluid d-block mx-auto rounded-5" />
+        <img :src="product.imageUrlDetails || product.imageUrl" :alt="product.title" class="img-fluid d-block mx-auto mb-5 rounded-5" />
       </div>
 
       <div class="col-md-6">
         <div class="d-flex justify-content-between align-items-start mb-3">
-          <h1 class="display-6 fw-bold mb-0">{{ product.title }}</h1>
+          <h1 class="display-6 fw-bold mb-">{{ product.title }}</h1>
           <ShareButton 
             :title="product.title" 
             :description="product.description"
