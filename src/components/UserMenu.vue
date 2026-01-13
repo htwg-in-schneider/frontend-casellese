@@ -12,9 +12,11 @@ const handleLogin = () => {
 }
 
 const handleLogout = () => {
+  // Für GitHub Pages: origin + pathname base
+  const baseUrl = import.meta.env.BASE_URL || '/'
   logout({
     logoutParams: {
-      returnTo: window.location.origin
+      returnTo: window.location.origin + baseUrl
     }
   })
 }
