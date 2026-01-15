@@ -4,6 +4,4 @@ Frontend für Rezept-Webshop
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-blue?style=for-the-badge)](https://htwg-in-schneider.github.io/frontend-casellese/)
 
-[![WebService](https://img.shields.io/badge/Live%20Demo-orange?style=for-the-badge)](https://backend-casellese.onrender.com)
-
-[![Render.com](https://img.shields.io/badge/Live%20Demo-red?style=for-the-badge)](https://dashboard.render.com/web/srv-d5fu0de3jp1c738avglg)
+[![WebService](https://img.shields.io/badge/Live%20Demo-red?style=for-the-badge)](https://dashboard.render.com/web/srv-d5fu0de3jp1c738avglg)
